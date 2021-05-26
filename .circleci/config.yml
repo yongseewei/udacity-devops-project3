@@ -160,10 +160,11 @@ jobs:
       - run:
           name: Save back-end ip to memstash
           command: |
-            BACKEND_URL = $(aws ec2 describe-instances \
+            BACKEND_URL=$(aws ec2 describe-instances \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
               --filters "Name=tag:project,Values=udapeople" \
               --output text)
+            echo "${BACKEND_URL}"
             curl -H "Content-Type: text/plain" \ 
               -H "token: $MEMSTASH_TOKEN" \
               --request PUT --data ${BACKEND_URL} https://api.memstash.io/values/
@@ -301,13 +302,13 @@ jobs:
           name: Get backend url
           command: |
             export BACKEND_URL=$(curl -H "token: $MEMSTASH_TOKEN" --request GET https://api.memstash.io/values/)
-            echo $BACKEND_URL
+            echo "${BACKEND_URL}"
       - run:
           name: Backend smoke test.
           command: |
-            echo $BACKEND_URL
-            echo curl -s https://$($BACKEND_URL):3000/api/status)
-            if curl -s https://$($BACKEND_URL):3000/api/status)
+            echo "${BACKEND_URL}"
+            echo curl -s ${BACKEND_URL}:3000/api/status)
+            if curl -s ${BACKEND_URL}:3000/api/status)
             then
               return 1
             else
