@@ -13,9 +13,9 @@
 
 - name: "unzip file"
   shell: |
-    cd /home/ubuntu/backend
+    cd /home/ubuntu
     tar -xvzf backend.tar.gz
-    
+
 - name: "install backend package dependencies"
   shell: |
     cd /home/ubuntu/backend
