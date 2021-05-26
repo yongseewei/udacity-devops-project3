@@ -6,6 +6,18 @@
     state: latest
     update_cache: yes
 
+- name: "upgrade packages"
+  become: yes
+  apt:
+    upgrade: yes
+
+- name: "install node"
+  become: yes
+  apt:
+    name: ["nodejs", "npm"]
+    state: latest
+    update_cache: yes
+
 - name: "copy backend files to remote"
   copy:
     src: /root/project/backend.tar.gz
@@ -18,6 +30,7 @@
 
 - name: "install backend package dependencies"
   shell: |
+    ls -la
     cd /home/ubuntu/backend
     npm install
 
