@@ -130,7 +130,7 @@ jobs:
           name: Analyze Back-end
           command: |
             cd backend
-            npm audit fix --audit-level=critical --force
+            npm audit --audit-level=critical
 
   # deploy-infrastructure:
   #   docker:
