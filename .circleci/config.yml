@@ -43,6 +43,7 @@ jobs:
       - run:
           name: Build front-end
           command: |
+            npm i
             npm run build
       - save_cache:
           paths: [frontend/node_modules]
@@ -58,7 +59,8 @@ jobs:
       - run:
           name: Back-end build
           command: |
-             npm run build
+            npm i
+            npm run build
       - save_cache:
           paths: [backend/node_modules]
           key: backend-build
@@ -241,7 +243,7 @@ jobs:
             # your code here
       # Here's where you will add some code to rollback on failure  
 
-cleanup:
+  cleanup:
     docker:
       # Docker image here
     steps:
