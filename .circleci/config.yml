@@ -165,9 +165,7 @@ jobs:
               --filters "Name=tag:project,Values=udapeople" \
               --output text)
             echo "${BACKEND_URL}"
-            curl -H "Content-Type: text/plain" \ 
-              -H "token: $MEMSTASH_TOKEN" \
-              --request PUT --data ${BACKEND_URL} https://api.memstash.io/values/instanceip
+            curl -H "Content-Type: text/plain" -H "token: $MEMSTASH_TOKEN" --request PUT --data ${BACKEND_URL} https://api.memstash.io/values/instanceip
 
       - run:
           name: Add back-end ip to ansible inventory
