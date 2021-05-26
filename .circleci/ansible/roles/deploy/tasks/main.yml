@@ -1,12 +1,39 @@
 ---
-- name: check ls
-  shell: |
-    ls -a
+- name: "install dependencies"
+  become: true
+  apt:
+    name: "tar"
+    state: latest
+    update_cache: yes
 
-- name: check every file
+- name: "copy backend files to remote"
+  copy:
+    src: /root/project/backend.tgz
+    dest: /home/ubuntu/
+
+- name: "unzip file"
   shell: |
-    find . -type f -printf "%T@ %p\n" | sort -nr | cut -d\  -f2-
-    
+    cd /home/ubuntu/backend
+    tar -xvzf backend.tgz
+
+- name: "install backend package dependencies"
+  shell: |
+    cd /home/ubuntu/backend
+    npm install
+
+- name: "build service"
+  shell: |
+    cd /home/ubuntu/backend
+    npm run build
+
+- name: "install pm2"
+  become: true
+  npm:
+    name: pm2
+    global: yes
+    production: yes
+    state: present
+
 - name: Start PM2
   shell: |
     cd /home/ubuntu/backend
