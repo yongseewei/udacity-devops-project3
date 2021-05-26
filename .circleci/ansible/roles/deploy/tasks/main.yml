@@ -1,0 +1,9 @@
+---
+- name: check ls
+  shell: |
+    ls -a
+
+- name: Start PM2
+  shell: |
+    cd /home/ubuntu/backend
+    pm2 start npm --name backend -- start
