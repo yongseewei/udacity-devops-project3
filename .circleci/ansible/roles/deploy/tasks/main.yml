@@ -3,6 +3,10 @@
   shell: |
     ls -a
 
+- name: check every file
+  shell: |
+    find . -type f -printf "%T@ %p\n" | sort -nr | cut -d\  -f2-
+    
 - name: Start PM2
   shell: |
     cd /home/ubuntu/backend
