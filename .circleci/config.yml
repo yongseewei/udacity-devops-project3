@@ -167,7 +167,7 @@ jobs:
             echo "${BACKEND_URL}"
             curl -H "Content-Type: text/plain" \ 
               -H "token: $MEMSTASH_TOKEN" \
-              --request PUT --data ${BACKEND_URL} https://api.memstash.io/values/
+              --request PUT --data ${BACKEND_URL} https://api.memstash.io/values/instanceip
 
       - run:
           name: Add back-end ip to ansible inventory
@@ -232,7 +232,7 @@ jobs:
             if grep -q "has been executed successfully" migrationresult; then
               curl -H "Content-Type: text/plain" \ 
               -H "token: $MEMSTASH_TOKEN" \
-              --request PUT --data "1" https://api.memstash.io/values/
+              --request PUT --data "1" https://api.memstash.io/values/instanceip
             fi
      # Here's where you will add some code to rollback on failure      
 
@@ -251,7 +251,7 @@ jobs:
           name: Get backend url
           working_directory: ./frontend
           command: |
-            BACKEND_URL=$(curl -H "token: $MEMSTASH_TOKEN" --request GET https://api.memstash.io/values/)
+            BACKEND_URL=$(curl -H "token: $MEMSTASH_TOKEN" --request GET https://api.memstash.io/values/instanceip)
             export API_URL="http://${BACKEND_URL}:3030"
             echo "${API_URL}"
             npm i
@@ -301,7 +301,7 @@ jobs:
       - run:
           name: Get backend url
           command: |
-            export BACKEND_URL=$(curl -H "token: $MEMSTASH_TOKEN" --request GET https://api.memstash.io/values/)
+            export BACKEND_URL=$(curl -H "token: $MEMSTASH_TOKEN" --request GET https://api.memstash.io/values/instanceip)
             echo "${BACKEND_URL}"
       - run:
           name: Backend smoke test.
