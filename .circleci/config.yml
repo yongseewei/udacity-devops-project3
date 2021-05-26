@@ -274,7 +274,7 @@ jobs:
           name: Deploy frontend objects
           working_directory: ./frontend
           command: |
-            aws s3 cp ./dist s3://udapeople-${CIRCLE_WORKFLOW_ID}/ --recursive
+            aws s3 cp ./dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7}/ --recursive
       # Here's where you will add some code to rollback on failure      
                     
   deploy-backend:
@@ -299,6 +299,7 @@ jobs:
           command: |
             tar -C backend -czvf backend.tar.gz .
             ls -a
+            pwd
       - run:
           name: Deploy backend
           working_directory: ./.circleci/ansible

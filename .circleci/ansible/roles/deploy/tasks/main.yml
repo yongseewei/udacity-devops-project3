@@ -8,14 +8,14 @@
 
 - name: "copy backend files to remote"
   copy:
-    src: /root/project/backend.tgz
+    src: /root/project/backend.tar.gz
     dest: /home/ubuntu/
 
 - name: "unzip file"
   shell: |
     cd /home/ubuntu/backend
-    tar -xvzf backend.tgz
-
+    tar -xvzf backend.tar.gz
+    
 - name: "install backend package dependencies"
   shell: |
     cd /home/ubuntu/backend
