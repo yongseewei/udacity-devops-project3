@@ -407,7 +407,8 @@ jobs:
             OldWorkflowID=$(curl -H "token: $MEMSTASH_TOKEN" --request GET https://api.memstash.io/values/oldworkflowid)
             STACKS=($(aws cloudformation list-stacks --query "StackSummaries[*].StackName" \
               --stack-status-filter CREATE_COMPLETE --no-paginate --output text)) 
-            
+            echo "Old workflow ID: ${OldWorkflowID}"
+            echo "STACKS: ${STACKS[@]}"
             if [[ "${STACKS[@]}" =~ "${OldWorkflowID}" ]]
             then
               aws s3 rm "s3://udapeople-${OldWorkflowID}" --recursive
