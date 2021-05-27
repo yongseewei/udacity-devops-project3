@@ -344,8 +344,8 @@ jobs:
           name: Backend smoke test.
           command: |
             echo "${BACKEND_URL}"
-            echo curl -s ${BACKEND_URL}:3000/api/status
-            if curl -s ${BACKEND_URL}:3000/api/status
+            echo $(curl -s http://${BACKEND_URL}:3000/api/status)
+            if curl -s http://${BACKEND_URL}:3000/api/status
             then
               return 1
             else
@@ -357,9 +357,9 @@ jobs:
             FRONTEND_URL="http://udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3-website-us-east-1.amazonaws.com"
             if curl -s ${FRONTEND_URL} | grep "Welcome"
             then
-              return 1
-            else
               return 0
+            else
+              return 1
             fi
       # Here's where you will add some code to rollback on failure 
       - destroy-environment 
