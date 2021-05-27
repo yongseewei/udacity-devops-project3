@@ -1,8 +1,5 @@
 version: 2.1
 
-orbs:
-  aws-cli: circleci/aws-cli@2.0
-
 commands:
   destroy-environment:
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
@@ -144,7 +141,6 @@ jobs:
     steps:
       # Checkout code from git
       - checkout
-      - aws-cli/install
       - run: yum -y install tar gzip
       - run:
           name: Ensure back-end infrastructure exists
@@ -204,7 +200,6 @@ jobs:
     steps:
       # Checkout code from git
       - checkout
-      - aws-cli/install
       # Add ssh keys with fingerprint
       - add_ssh_keys:
           fingerprints: ["${SSH_KEY}"]
@@ -215,6 +210,7 @@ jobs:
           name: Install dependencies
           command: |
             apk add --update ansible
+            pip install awscli
       - run:
           name: Configure server
           working_directory: ./.circleci/ansible
@@ -229,9 +225,13 @@ jobs:
     steps:
       # Checkout code from git
       - checkout
-      - aws-cli/install
       - restore_cache:
           keys: [backend-build]
+      - run:
+          name: Install dependencies
+          command: |
+            sudo apt-get update
+            sudo apt-get install awscli
       - run:
           name: Run migrations
           working_directory: ./backend
@@ -268,7 +268,6 @@ jobs:
     steps:
       # Checkout code from git
       - checkout
-      - aws-cli/install
       - run:
           name: Install dependencies
           command: |
@@ -299,7 +298,6 @@ jobs:
     steps:
       # Checkout code from git
       - checkout
-      - aws-cli/install
       # Add ssh keys with fingerprint
       - add_ssh_keys:
           fingerprints: ["${SSH_KEY}"]
@@ -311,6 +309,7 @@ jobs:
           command: |
             apk add --update ansible
             apk add --update tar gzip curl
+            pip install awscli
       - run:
           name: compress backend
           command: |
@@ -331,11 +330,11 @@ jobs:
     steps:
       # Checkout code from git
       - checkout
-      - aws-cli/install
       - run:
           name: Install dependencies
           command: |
             apk add curl
+            pip install awscli
       - run:
           name: Get backend url
           command: |
