@@ -10,8 +10,9 @@ commands:
           name: Destroy environments
           when: on_fail
           command: |
-            # Your code here
-            exit 1
+            aws s3 rm s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7}/ --recursive
+            aws cloudformation delete-stack --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" 
+            aws cloudformation delete-stack --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" 
 
   revert-migrations:
     description: Revert the last migration if successfully run in the current workflow.
@@ -21,15 +22,17 @@ commands:
       - run:
           name: Revert migrations
           # Add when this will run
+          when: on_fail
           command: |
             # Curl command here to see if there was a successful migration associated with the workflow id, store result in SUCCESS variable
-            SUCCESS = 1
-            if(( $SUCCESS==1 )); 
+            SUCCESS = $(curl -H "token: $MEMSTASH_TOKEN" --request GET https://api.memstash.io/values/migrationresult)
+            echo $SUCCESS
+            if(( $SUCCESS==0 )); 
             then
-            #  cd ~/project/backend
-            #  npm install
+              cd ~/project/backend
+              npm install
+              npm run migrations:revert
             #  Add revert code here. You can find this in the Getting Started section.
-              exit 1
             fi
             
 jobs:
@@ -179,7 +182,8 @@ jobs:
           root: ~/
           paths:
             - project/.circleci/ansible/inventory.txt
-      # Here's where you will add some code to rollback on failure      
+      # Here's where you will add some code to rollback on failure 
+      - destroy-environment     
 
   configure-infrastructure:
     docker:
@@ -211,7 +215,8 @@ jobs:
           working_directory: ./.circleci/ansible
           command: |
             ansible-playbook -i inventory.txt configure-server.yml
-      # Here's where you will add some code to rollback on failure      
+      # Here's where you will add some code to rollback on failure
+      - destroy-environment      
 
   run-migrations:
     docker:
@@ -247,7 +252,9 @@ jobs:
             else
               curl -H "Content-Type: text/plain" -H "token: $MEMSTASH_TOKEN" --request PUT --data "0" https://api.memstash.io/values/migrationresult
             fi
-     # Here's where you will add some code to rollback on failure      
+     # Here's where you will add some code to rollback on failure   
+      - destroy-environment   
+      - revert-migrations
 
   deploy-frontend:
     docker:
@@ -275,7 +282,9 @@ jobs:
           working_directory: ./frontend
           command: |
             aws s3 cp ./dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7}/ --recursive
-      # Here's where you will add some code to rollback on failure      
+      # Here's where you will add some code to rollback on failure  
+      - destroy-environment  
+      - revert-migrations  
                     
   deploy-backend:
     docker:
@@ -305,6 +314,8 @@ jobs:
             cat inventory.txt
             ansible-playbook -i inventory.txt deploy-backend.yml
       # Here's where you will add some code to rollback on failure  
+      - destroy-environment
+      - revert-migrations
 
   smoke-test:
     docker:
@@ -342,7 +353,9 @@ jobs:
             else
               return 0
             fi
-      # Here's where you will add some code to rollback on failure  
+      # Here's where you will add some code to rollback on failure 
+      - destroy-environment 
+      - revert-migrations
 
   # cloudfront-update:
   #   docker:
