@@ -1,2 +1,8 @@
 URL to public GitHub repository [URL01]
     https://github.com/yongseewei/udacity-devops-project3
+
+Public URL for your S3 Bucket (aka, your front-end). [URL02]
+
+Public URL for your CloudFront distribution (aka, your production front-end). [URL03]
+
+Public URL for your back-end server in EC2. [URL04]
