@@ -10,11 +10,6 @@ commands:
       # Add parameter here   
     steps:
       - run:
-        name: Install dependencies
-        when: on_fail
-        command: |
-
-      - run:
           name: Destroy environments
           when: on_fail
           command: |
