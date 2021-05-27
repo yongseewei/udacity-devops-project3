@@ -336,13 +336,9 @@ jobs:
             apk add curl
             pip install awscli
       - run:
-          name: Get backend url
-          command: |
-            export BACKEND_URL=$(curl -H "token: $MEMSTASH_TOKEN" --request GET https://api.memstash.io/values/instanceip)
-            echo "${BACKEND_URL}"
-      - run:
           name: Backend smoke test.
           command: |
+            BACKEND_URL=$(curl -H "token: $MEMSTASH_TOKEN" --request GET https://api.memstash.io/values/instanceip)
             echo "${BACKEND_URL}"
             echo $(curl -s http://${BACKEND_URL}:3000/api/status)
             if curl -s http://${BACKEND_URL}:3000/api/status
@@ -405,14 +401,14 @@ workflows:
     jobs:
       - build-frontend
       - build-backend
-      - test-frontend:
-          requires: [build-frontend]
-      - test-backend:
-          requires: [build-backend]
-      - scan-backend:
-          requires: [build-backend]
-      - scan-frontend:
-          requires: [build-frontend]
+      # - test-frontend:
+      #     requires: [build-frontend]
+      # - test-backend:
+      #     requires: [build-backend]
+      # - scan-backend:
+      #     requires: [build-backend]
+      # - scan-frontend:
+      #     requires: [build-frontend]
       - deploy-infrastructure:
           # requires: [test-frontend, test-backend, scan-frontend, scan-backend]
           requires: [build-frontend,build-backend]
