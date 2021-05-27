@@ -1,11 +1,19 @@
 version: 2.1
 
+orbs:
+  aws-cli: circleci/aws-cli@2.0
+
 commands:
   destroy-environment:
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
     parameters:
       # Add parameter here   
     steps:
+      - run:
+        name: Install dependencies
+        when: on_fail
+        command: |
+
       - run:
           name: Destroy environments
           when: on_fail
@@ -25,9 +33,9 @@ commands:
           when: on_fail
           command: |
             # Curl command here to see if there was a successful migration associated with the workflow id, store result in SUCCESS variable
-            SUCCESS = $(curl -H "token: $MEMSTASH_TOKEN" --request GET https://api.memstash.io/values/migrationresult)
+            SUCCESS=$(curl -H "token: $MEMSTASH_TOKEN" --request GET https://api.memstash.io/values/migrationresult)
             echo $SUCCESS
-            if(( $SUCCESS==0 )); 
+            if(( $SUCCESS==1 )); 
             then
               cd ~/project/backend
               npm install
@@ -141,6 +149,7 @@ jobs:
     steps:
       # Checkout code from git
       - checkout
+      - aws-cli/install
       - run: yum -y install tar gzip
       - run:
           name: Ensure back-end infrastructure exists
@@ -200,6 +209,7 @@ jobs:
     steps:
       # Checkout code from git
       - checkout
+      - aws-cli/install
       # Add ssh keys with fingerprint
       - add_ssh_keys:
           fingerprints: ["${SSH_KEY}"]
@@ -224,6 +234,7 @@ jobs:
     steps:
       # Checkout code from git
       - checkout
+      - aws-cli/install
       - restore_cache:
           keys: [backend-build]
       - run:
@@ -262,6 +273,7 @@ jobs:
     steps:
       # Checkout code from git
       - checkout
+      - aws-cli/install
       - run:
           name: Install dependencies
           command: |
@@ -292,6 +304,7 @@ jobs:
     steps:
       # Checkout code from git
       - checkout
+      - aws-cli/install
       # Add ssh keys with fingerprint
       - add_ssh_keys:
           fingerprints: ["${SSH_KEY}"]
@@ -323,6 +336,7 @@ jobs:
     steps:
       # Checkout code from git
       - checkout
+      - aws-cli/install
       - run:
           name: Install dependencies
           command: |
@@ -405,22 +419,23 @@ workflows:
       #     requires: [build-backend]
       # - scan-frontend:
       #     requires: [build-frontend]
-      - deploy-infrastructure:
-          # requires: [test-frontend, test-backend, scan-frontend, scan-backend]
-          requires: [build-frontend,build-backend]
-          filters:
-            branches:
-              only: [main]
-      - configure-infrastructure:
-          requires: [deploy-infrastructure]
-      - run-migrations:
-          requires: [configure-infrastructure]
-      - deploy-frontend:
-          requires: [run-migrations]
-      - deploy-backend:
-          requires: [run-migrations]
-      - smoke-test:
-          requires: [deploy-backend, deploy-frontend]
+      # - deploy-infrastructure:
+      #     # requires: [test-frontend, test-backend, scan-frontend, scan-backend]
+      #     requires: [build-frontend,build-backend]
+      #     filters:
+      #       branches:
+      #         only: [main]
+      # - configure-infrastructure:
+      #     requires: [deploy-infrastructure]
+      # - run-migrations:
+      #     requires: [configure-infrastructure]
+      # - deploy-frontend:
+      #     requires: [run-migrations]
+      # - deploy-backend:
+      #     requires: [run-migrations]
+      - smoke-test
+      # - smoke-test:
+      #     requires: [deploy-backend, deploy-frontend]
       # - cloudfront-update:
       #     requires: [smoke-test]
       # - cleanup:
