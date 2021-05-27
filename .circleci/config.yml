@@ -340,8 +340,8 @@ jobs:
           command: |
             BACKEND_URL=$(curl -H "token: $MEMSTASH_TOKEN" --request GET https://api.memstash.io/values/instanceip)
             echo "${BACKEND_URL}"
-            echo $(curl -s http://${BACKEND_URL}:3000/api/status)
-            if curl -s http://${BACKEND_URL}:3000/api/status
+            echo $(curl -s http://${BACKEND_URL}:3030/api/status)
+            if curl -s http://${BACKEND_URL}:3030/api/status | grep "ok"
             then
               return 1
             else
