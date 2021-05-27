@@ -210,7 +210,7 @@ jobs:
           name: Configure server
           working_directory: ./.circleci/ansible
           command: |
-            ansible-playbook -i inventory configure-server.yml
+            ansible-playbook -i inventory.txt configure-server.yml
       # Here's where you will add some code to rollback on failure      
 
   run-migrations:
@@ -298,13 +298,10 @@ jobs:
           name: compress backend
           command: |
             tar -C backend -czvf backend.tar.gz .
-            ls -a
-            pwd
       - run:
           name: Deploy backend
           working_directory: ./.circleci/ansible
           command: |
-            pwd
             cat inventory.txt
             ansible-playbook -i inventory.txt deploy-backend.yml
       # Here's where you will add some code to rollback on failure  
@@ -328,8 +325,8 @@ jobs:
           name: Backend smoke test.
           command: |
             echo "${BACKEND_URL}"
-            echo curl -s ${BACKEND_URL}:3000/api/status)
-            if curl -s ${BACKEND_URL}:3000/api/status)
+            echo curl -s ${BACKEND_URL}:3000/api/status
+            if curl -s ${BACKEND_URL}:3000/api/status
             then
               return 1
             else
