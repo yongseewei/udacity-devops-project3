@@ -10,7 +10,7 @@ commands:
           name: Destroy environments
           when: on_fail
           command: |
-            aws s3 rm s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7}/ --recursive
+            aws s3 rm s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
             aws cloudformation delete-stack --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" 
             aws cloudformation delete-stack --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" 
 
@@ -383,13 +383,14 @@ jobs:
             STACKS=($(aws cloudformation list-stacks --query "StackSummaries[*].StackName" \
               --stack-status-filter CREATE_COMPLETE --no-paginate --output text))
             echo "Old workflow ID: ${OldWorkflowID}"
+            
             aws cloudformation deploy \
               --template-file .circleci/files/cloudfront.yml \
               --tags project=udapeople \
               --stack-name udapeople-cloudfront \
               --parameter-overrides WorkflowID=${CIRCLE_WORKFLOW_ID:0:7} & 
-            
-            if [[ "${STACKS[@]}" =~ "${OldWorkflowID"]]
+            echo "STACKS: ${STACKS[@]}"
+            if [[ "${STACKS[@]}" =~ "${OldWorkflowID}" ]]
             then
               return 1
             else
