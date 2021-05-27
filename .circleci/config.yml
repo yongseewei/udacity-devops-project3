@@ -379,6 +379,7 @@ jobs:
             STACKS=($(aws cloudformation list-stacks --query "StackSummaries[*].StackName" \
               --stack-status-filter CREATE_COMPLETE --no-paginate --output text))
             echo "Old workflow ID: ${OldWorkflowID}"
+            
             curl -H "Content-Type: text/plain" -H "token: $MEMSTASH_TOKEN" --request PUT --data "${OldWorkflowID}" https://api.memstash.io/values/oldworkflowid
 
             aws cloudformation deploy \
