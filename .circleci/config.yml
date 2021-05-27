@@ -183,7 +183,7 @@ jobs:
           paths:
             - project/.circleci/ansible/inventory.txt
       # Here's where you will add some code to rollback on failure 
-      - destroy-environment     
+      # - destroy-environment     
 
   configure-infrastructure:
     docker:
@@ -217,7 +217,7 @@ jobs:
           command: |
             ansible-playbook -i inventory.txt configure-server.yml
       # Here's where you will add some code to rollback on failure
-      - destroy-environment      
+      # - destroy-environment      
 
   run-migrations:
     docker:
@@ -259,8 +259,8 @@ jobs:
               curl -H "Content-Type: text/plain" -H "token: $MEMSTASH_TOKEN" --request PUT --data "0" https://api.memstash.io/values/migrationresult
             fi
      # Here's where you will add some code to rollback on failure   
-      - destroy-environment   
-      - revert-migrations
+      # - destroy-environment   
+      # - revert-migrations
 
   deploy-frontend:
     docker:
@@ -289,8 +289,8 @@ jobs:
           command: |
             aws s3 cp ./dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7}/ --recursive
       # Here's where you will add some code to rollback on failure  
-      - destroy-environment  
-      - revert-migrations  
+      # - destroy-environment  
+      # - revert-migrations  
                     
   deploy-backend:
     docker:
@@ -321,8 +321,8 @@ jobs:
             cat inventory.txt
             ansible-playbook -i inventory.txt deploy-backend.yml
       # Here's where you will add some code to rollback on failure  
-      - destroy-environment
-      - revert-migrations
+      # - destroy-environment
+      # - revert-migrations
 
   smoke-test:
     docker:
@@ -360,8 +360,8 @@ jobs:
               return 1
             fi
       # Here's where you will add some code to rollback on failure 
-      - destroy-environment 
-      - revert-migrations
+      # - destroy-environment 
+      # - revert-migrations
 
   cloudfront-update:
     docker:
@@ -391,8 +391,8 @@ jobs:
             
           
       # Here's where you will add some code to rollback on failure 
-      - destroy-environment 
-      - revert-migrations 
+      # - destroy-environment 
+      # - revert-migrations 
 
   cleanup:
     docker:
@@ -408,7 +408,7 @@ jobs:
             STACKS=($(aws cloudformation list-stacks --query "StackSummaries[*].StackName" \
               --stack-status-filter CREATE_COMPLETE --no-paginate --output text)) 
             echo "Old workflow ID: ${OldWorkflowID}"
-            
+
             echo "STACKS: ${STACKS[@]}"
 
             if [[ "${STACKS[@]}" =~ "${OldWorkflowID}" ]]
