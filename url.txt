@@ -6,3 +6,5 @@ Public URL for your S3 Bucket (aka, your front-end). [URL02]
 Public URL for your CloudFront distribution (aka, your production front-end). [URL03]
 
 Public URL for your back-end server in EC2. [URL04]
+
+Public URL to your Prometheus Server. [URL05]
